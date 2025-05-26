@@ -1,5 +1,6 @@
 package com.example.board_game_service.controllers;
 
+import com.example.board_game_service.exceptions.BoardGameNotFoundException;
 import com.example.board_game_service.models.BoardGame;
 import com.example.board_game_service.repositories.BoardGameRepository;
 import com.example.board_game_service.services.BoardGameService;
@@ -18,12 +19,12 @@ public class BoardGameController {
     BoardGameService boardGameService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<BoardGame> getBoardGameById(@PathVariable Long id) {
-        BoardGame foundboardGame = boardGameService.findBoardGameById(id);
-        if(foundboardGame != null) {
-            return new ResponseEntity<>(foundboardGame, HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> getBoardGameById(@PathVariable Long id) {
+        try {
+            BoardGame foundboardGame = boardGameService.findBoardGameById(id);
+            return new ResponseEntity<>(foundboardGame, HttpStatus.OK);
+        } catch (BoardGameNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }
