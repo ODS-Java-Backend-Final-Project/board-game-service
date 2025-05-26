@@ -21,4 +21,13 @@ public class BoardGameService {
             throw new BoardGameNotFoundException("Board game with ID " + id + " not found.");
         }
     }
+
+    public void deleteBoardGameById(Long id) {
+        Optional<BoardGame> foundBoardGame =   boardGameRepository.findById(id);
+        if (foundBoardGame.isPresent()) {
+            boardGameRepository.deleteById(id);
+        } else {
+            throw new BoardGameNotFoundException("Board game with ID " + id + " not found.");
+        }
+    }
 }
