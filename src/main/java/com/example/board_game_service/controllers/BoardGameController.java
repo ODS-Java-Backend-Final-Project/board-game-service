@@ -31,8 +31,8 @@ public class BoardGameController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<BoardGame> findAllBoardGames() {
-        return boardGameService.findAll();
+    public ResponseEntity<?> findAllBoardGames() {
+        return new ResponseEntity<>(boardGameService.findAll(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
