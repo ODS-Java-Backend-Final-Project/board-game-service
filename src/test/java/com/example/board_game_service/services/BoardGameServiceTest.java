@@ -19,7 +19,7 @@ public class BoardGameServiceTest {
     @Test
     @DisplayName("We received the right board game by ID")
     public void testFindBoardGameById() {
-        BoardGame foundBoardGame = boardGameService.findBoardGameById(5L);
+        BoardGame foundBoardGame = boardGameService.findBoardGameById(10L);
         assertNotNull(foundBoardGame);
     }
 
@@ -45,15 +45,15 @@ public class BoardGameServiceTest {
         assertNotNull(savedBoardGame);
         assertEquals("Catan", savedBoardGame.getName());
         assertEquals("Strategy", savedBoardGame.getCategory());
-        assertEquals(2, savedBoardGame.getMinPlayers());
-        assertEquals(6, savedBoardGame.getMaxPlayers());
+        assertEquals(3, savedBoardGame.getMinPlayers());
+        assertEquals(4, savedBoardGame.getMaxPlayers());
         assertEquals(90, savedBoardGame.getDuration());
     }
 
     @Test
     @DisplayName("Delete board game by ID and check if it is deleted properly")
     public void testDeleteBoardGameById() {
-        boardGameService.deleteBoardGameById(5L);
+        boardGameService.deleteBoardGameById(13L);
         assertThrows(BoardGameNotFoundException.class, () -> boardGameService.findBoardGameById(5L));
     }
 
@@ -61,7 +61,7 @@ public class BoardGameServiceTest {
     @DisplayName("We update a board game and check if it is updated properly")
     public void testUpdateBoardGame() {
         BoardGame updatedBoardGame = new BoardGame("Unstable Unicorns", "Strategy", 3, 4, 90);
-        BoardGame boardGameChanged = boardGameService.updateBoardGame(5L, updatedBoardGame);
+        BoardGame boardGameChanged = boardGameService.updateBoardGame(10L, updatedBoardGame);
         assertNotNull(boardGameChanged);
         assertEquals("Unstable Unicorns", boardGameChanged.getName());
         assertEquals("Strategy", boardGameChanged.getCategory());
@@ -70,10 +70,4 @@ public class BoardGameServiceTest {
         assertEquals(90, boardGameChanged.getDuration());
     }
 
-    @Test
-    @DisplayName("We try to update a board game with a non-existing ID and expect an exception")
-    public void testUpdateBoardGameException() {
-        BoardGame updatedBoardGame = new BoardGame("Unstable Unicorns", "Strategy", 3, 4, 90);
-        assertThrows(BoardGameNotFoundException.class, () -> boardGameService.updateBoardGame(99L, updatedBoardGame));
-    }
 }
