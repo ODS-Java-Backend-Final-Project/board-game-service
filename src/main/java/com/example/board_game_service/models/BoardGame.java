@@ -21,12 +21,4 @@ public class BoardGame {
     private int minPlayers;
     private int maxPlayers;
     private int duration;
-
-    public BoardGame(String name, String category, int minPlayers, int maxPlayers, int duration) {
-        this.name = name;
-        this.category = category;
-        this.minPlayers = minPlayers;
-        this.maxPlayers = maxPlayers;
-        this.duration = duration;
-    }
 }
