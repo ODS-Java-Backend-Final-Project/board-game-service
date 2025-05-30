@@ -1,6 +1,7 @@
 package com.example.board_game_service.controllers;
 
 import com.example.board_game_service.exceptions.BoardGameNotFoundException;
+import com.example.board_game_service.exceptions.InvalidBoardGameException;
 import com.example.board_game_service.models.BoardGame;
 import com.example.board_game_service.services.BoardGameService;
 import jakarta.validation.Valid;
@@ -32,32 +33,46 @@ public class BoardGameController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> findAllBoardGames() {
-        return new ResponseEntity<>(boardGameService.findAll(), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(boardGameService.findAll(), HttpStatus.OK);
+        } catch (BoardGameNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBoardGameById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteBoardGameById(@PathVariable Long id) {
         try {
             boardGameService.deleteBoardGameById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (BoardGameNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BoardGame createBoardGame(@RequestBody BoardGame boardGame) {
-        return boardGameService.saveBoardGame(boardGame);
+    public ResponseEntity<?> createBoardGame(@RequestBody  BoardGame boardGame) {
+        try {
+           BoardGame newBoardGame = boardGameService.saveBoardGame(boardGame);
+            return new ResponseEntity<>(newBoardGame, HttpStatus.CREATED);
+        } catch (InvalidBoardGameException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BoardGame updateBoardGame(@PathVariable Long id, @RequestBody @Valid BoardGame boardGame) {
+    public ResponseEntity<?> updateBoardGame(@PathVariable Long id, @RequestBody  BoardGame boardGame) {
         try {
-            return boardGameService.updateBoardGame(id, boardGame);
+            BoardGame updatedBoardGame = boardGameService.updateBoardGame(id, boardGame);
+            return new ResponseEntity<>(updatedBoardGame, HttpStatus.OK);
         } catch (BoardGameNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            return new ResponseEntity<>( e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (InvalidBoardGameException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
 }

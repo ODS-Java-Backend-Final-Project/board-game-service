@@ -58,8 +58,8 @@ public class BoardGameServiceTest {
     public void testSaveBoardGame() {
         BoardGame newBoardGame = new BoardGame();
 
-        newBoardGame.setName("Catan");
-        newBoardGame.setCategory("Strategy");
+        newBoardGame.setName("Polilla Tramposa");
+        newBoardGame.setCategory("Trampas");
         newBoardGame.setMinPlayers(2);
         newBoardGame.setMaxPlayers(6);
         newBoardGame.setDuration(90);
@@ -67,8 +67,8 @@ public class BoardGameServiceTest {
 
         assertNotNull(savedBoardGame);
 
-        assertEquals("Catan", savedBoardGame.getName());
-        assertEquals("Strategy", savedBoardGame.getCategory());
+        assertEquals("Polilla Tramposa", savedBoardGame.getName());
+        assertEquals("Trampas", savedBoardGame.getCategory());
         assertEquals(2, savedBoardGame.getMinPlayers());
         assertEquals(6, savedBoardGame.getMaxPlayers());
         assertEquals(90, savedBoardGame.getDuration());

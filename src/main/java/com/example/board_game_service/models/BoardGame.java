@@ -1,9 +1,6 @@
 package com.example.board_game_service.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +18,7 @@ public class BoardGame {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     @NotBlank(message = "Name can´t be empty")
     @Size(max = 100, message = "Name can´t be longer than 100 characters")
     private String name;
@@ -34,9 +32,9 @@ public class BoardGame {
 
     @NotNull(message = "You must provide a maximum number of players")
     @Min(1)
-    private int maxPlayers;
+    private Integer maxPlayers;
 
     @NotNull(message = "You must provide a duration in minutes")
     @Min(1)
-    private int duration;
+    private Integer duration;
 }

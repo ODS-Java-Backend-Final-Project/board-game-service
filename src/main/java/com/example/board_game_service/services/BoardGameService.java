@@ -1,6 +1,7 @@
 package com.example.board_game_service.services;
 
 import com.example.board_game_service.exceptions.BoardGameNotFoundException;
+import com.example.board_game_service.exceptions.InvalidBoardGameException;
 import com.example.board_game_service.models.BoardGame;
 import com.example.board_game_service.repositories.BoardGameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,23 +35,48 @@ public class BoardGameService {
         if (foundBoardGame.isPresent()) {
             boardGameRepository.deleteById(id);
         } else {
-            throw new BoardGameNotFoundException("Board game with ID " + id + " not found.");
+            throw new BoardGameNotFoundException("Can´t delete. Board game with ID " + id + " is not in Data Base.");
         }
     }
 
     public BoardGame saveBoardGame(BoardGame boardGame) {
+        Optional<BoardGame> foundBoardGame = boardGameRepository.findByName(boardGame.getName());
+        if(foundBoardGame.isPresent()) {
+            throw new InvalidBoardGameException(boardGame.getName() + " is already in the data base. ID: " + boardGame.getId());
+        }
+        boardGameValidation(boardGame);
         return boardGameRepository.save(boardGame);
     }
 
     public BoardGame updateBoardGame(Long id, BoardGame boardGame ) throws BoardGameNotFoundException{
-        BoardGame existingBoardGame = boardGameRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Board game with ID " + id + " not found."));
-        existingBoardGame.setName(boardGame.getName());
-        existingBoardGame.setCategory(boardGame.getCategory());
-        existingBoardGame.setMinPlayers(boardGame.getMinPlayers());
-        existingBoardGame.setMaxPlayers(boardGame.getMaxPlayers());
-        existingBoardGame.setDuration(boardGame.getDuration());
+        boardGameValidation(boardGame);
 
-        return boardGameRepository.save(existingBoardGame);
+        Optional<BoardGame> optionalBoardGame = boardGameRepository.findById(id);
+        if(optionalBoardGame.isPresent()) {
+           BoardGame existingBoardGame = optionalBoardGame.get();
+            existingBoardGame.setName(boardGame.getName());
+            existingBoardGame.setCategory(boardGame.getCategory());
+            existingBoardGame.setMinPlayers(boardGame.getMinPlayers());
+            existingBoardGame.setMaxPlayers(boardGame.getMaxPlayers());
+            existingBoardGame.setDuration(boardGame.getDuration());
+
+            return boardGameRepository.save(existingBoardGame);
+        } else {
+            throw new BoardGameNotFoundException("Board game with ID " + id + " not found.");
+        }
+    }
+
+    private void boardGameValidation(BoardGame boardGame) {
+
+        if (boardGame.getMinPlayers() > boardGame.getMaxPlayers()) {
+            throw new InvalidBoardGameException("Minimum players cannot be greater than maximum players.");
+        }
+        if (boardGame.getMinPlayers() == 0 || boardGame.getMaxPlayers() == 0 ) {
+            throw new InvalidBoardGameException("Number of player must be at least 1.");
+        }
+        if (boardGame.getDuration() == 0 ) {
+            throw new InvalidBoardGameException("Duration must be at least 1 minute.");
+        }
     }
 
 }

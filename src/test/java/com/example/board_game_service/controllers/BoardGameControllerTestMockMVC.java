@@ -77,7 +77,14 @@ public class BoardGameControllerTestMockMVC {
 
     @Test
     public void createBoardGameTest() throws Exception {
-        String boardGameJson = objectMapper.writeValueAsString(testBoardGame);
+        BoardGame newBoardGame = new BoardGame();
+
+        newBoardGame.setName("Polilla Tramposa");
+        newBoardGame.setCategory("Trampas");
+        newBoardGame.setMinPlayers(2);
+        newBoardGame.setMaxPlayers(6);
+        newBoardGame.setDuration(90);
+        String boardGameJson = objectMapper.writeValueAsString(newBoardGame);
 
         MvcResult result = mockMvc.perform(post("/api/board-games")
                 .contentType(MediaType.APPLICATION_JSON)
